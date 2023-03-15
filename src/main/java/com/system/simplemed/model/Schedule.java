@@ -9,8 +9,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "schedules")
@@ -25,7 +27,9 @@ public class Schedule {
     @Column(name = "time")
     private Time time;
 
-    @OneToOne(mappedBy = "schedule")
+    @ManyToOne
+    @JoinColumn(name = "doctor_id")
+    @JsonBackReference
     private Doctor doctor;
 
     public Schedule() {}
@@ -54,5 +58,13 @@ public class Schedule {
 
     public void setTime(Time time) {
         this.time = time;
+    }
+
+    public Doctor getDoctor() {
+        return doctor;
+    }
+
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
     }
 }

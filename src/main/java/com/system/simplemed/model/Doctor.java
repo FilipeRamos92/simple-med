@@ -1,13 +1,16 @@
 package com.system.simplemed.model;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "doctors")
@@ -34,9 +37,9 @@ public class Doctor {
     @Column(name = "speciality")
     private String speciality;
 
-    @OneToOne
-    @JoinColumn(name = "schedule_id", referencedColumnName = "id")
-    private Schedule schedule;
+    @OneToMany(mappedBy = "doctor")
+    @JsonManagedReference
+    private List<Schedule> schedules;
 
     public Doctor() {}
     
@@ -99,5 +102,13 @@ public class Doctor {
     
     public void setSpeciality(String speciality) {
         this.speciality = speciality;
+    }
+
+    public List<Schedule> getSchedules() {
+        return schedules;
+    }
+
+    public void setSchedules(List<Schedule> schedules) {
+        this.schedules = schedules;
     }
 }

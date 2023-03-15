@@ -1,8 +1,8 @@
 package com.system.simplemed.controller;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,10 +27,15 @@ public class DoctorController {
 
     @Autowired
     private DoctorRepository doctorRepository;
-
+	
     @GetMapping("doctors")
-    public List<Doctor> getAllDoctors(){
+    public Iterable<Doctor> getAllDoctors(){
         return doctorRepository.findAll();
+    }
+
+	@GetMapping("doctors/{id}")
+    public Optional<Doctor> getDoctor(@PathVariable Long id){
+        return doctorRepository.findById(id);
     }
 
 	@PostMapping("/doctors")
@@ -41,7 +46,7 @@ public class DoctorController {
     @PutMapping("/doctors/{id}")
 	public ResponseEntity<Doctor> updateDoctor(@PathVariable Long id, @RequestBody Doctor doctorDetails){
 		Doctor doctor = doctorRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Doctor not exist with id :" + id));
+				.orElseThrow(() -> new ResourceNotFoundException("Doctor not exist with id: " + id));
 		
         doctor.setFirstName(doctorDetails.getFirstName());
         doctor.setLastName(doctorDetails.getLastName());
