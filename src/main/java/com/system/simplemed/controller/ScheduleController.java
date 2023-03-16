@@ -31,11 +31,6 @@ public class ScheduleController {
         return scheduleRepository.findAll();
     }
 
-    @PostMapping("/schedules")
-    public Schedule createSchedule(@RequestBody Schedule schedule) {
-        return scheduleRepository.save(schedule);
-    }
-
     @DeleteMapping("/schedules/{id}")
 	public ResponseEntity<Map<String, Boolean>> deleteDoctor(@PathVariable Long id){
 		Schedule schedule = scheduleRepository.findById(id)
