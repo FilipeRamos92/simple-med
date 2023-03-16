@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
@@ -39,8 +40,12 @@ public class Doctor {
     private String speciality;
 
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonManagedReference(value = "schedule")
     private List<Schedule> schedules;
+
+    @OneToMany(mappedBy = "doctor")
+    @JsonManagedReference(value = "appointment")
+    private List<Appointment> appointments;
 
     public Doctor() {}
     
@@ -111,5 +116,13 @@ public class Doctor {
 
     public void setSchedules(List<Schedule> schedules) {
         this.schedules = schedules;
+    }
+
+    public List<Appointment> getAppointments() {
+        return appointments;
+    }
+
+    public void setAppointments(List<Appointment> appointments) {
+        this.appointments = appointments;
     }
 }

@@ -1,9 +1,9 @@
-// package com.system.simplemed.repository;
+package com.system.simplemed.repository;
 
-// import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-// import com.system.simplemed.model.Appointment;
+import com.system.simplemed.model.Appointment;
 
-// public interface AppointmentRepository extends JpaRepository<Appointment, Long>{
+public interface AppointmentRepository extends JpaRepository<Appointment, Long>{
     
-// }
+}

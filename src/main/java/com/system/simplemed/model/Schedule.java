@@ -28,8 +28,8 @@ public class Schedule {
     private Time time;
 
     @ManyToOne
-    @JoinColumn(name = "doctor_id")
-    @JsonBackReference
+    @JoinColumn(name = "doctor_id", nullable = false)
+    @JsonBackReference(value = "schedule")
     private Doctor doctor;
 
     public Schedule() {}
