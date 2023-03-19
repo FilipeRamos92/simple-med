@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.system.simplemed.exception.ResourceNotFoundException;
 import com.system.simplemed.model.Doctor;
 import com.system.simplemed.model.Schedule;
+import com.system.simplemed.model.Speciality;
 import com.system.simplemed.repository.DoctorRepository;
 import com.system.simplemed.repository.ScheduleRepository;
+import com.system.simplemed.repository.SpecialityRepository;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -32,6 +34,9 @@ public class DoctorController {
 
 	@Autowired
     private ScheduleRepository scheduleRepository;
+
+	@Autowired
+	private SpecialityRepository specialityRepository;
 	
     @GetMapping("doctors")
     public Iterable<Doctor> getAllDoctors(){
@@ -43,8 +48,12 @@ public class DoctorController {
         return doctorRepository.findById(id);
     }
 
-	@PostMapping("/doctors")
-	public Doctor createDoctor(@RequestBody Doctor doctor) {
+	@PostMapping("/doctors/speciality/{specialityId}")
+	public Doctor createDoctor(@PathVariable Long specialityId, @RequestBody Doctor doctor) {
+		Speciality speciality = specialityRepository.findById(specialityId)
+			.orElseThrow(() -> new ResourceNotFoundException("Speciality not exist with id: " + specialityId));
+		
+		doctor.setSpeciality(speciality);
 		return doctorRepository.save(doctor);
 	}
 

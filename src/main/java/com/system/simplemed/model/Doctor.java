@@ -8,10 +8,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
@@ -36,9 +37,6 @@ public class Doctor {
     @Column(name = "local_service")
     private String localService;
 
-    @Column(name = "speciality")
-    private String speciality;
-
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
     @JsonManagedReference(value = "schedule")
     private List<Schedule> schedules;
@@ -47,9 +45,13 @@ public class Doctor {
     @JsonManagedReference(value = "appointment")
     private List<Appointment> appointments;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "speciality_id", nullable = false)
+    private Speciality speciality;
+
     public Doctor() {}
     
-    public Doctor(String firstName, String lastName, String doctorReg, String gender, String localService, String speciality) {
+    public Doctor(String firstName, String lastName, String doctorReg, String gender, String localService, Speciality speciality) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.doctorReg = doctorReg;
@@ -102,11 +104,11 @@ public class Doctor {
         this.localService = localService;
     }
 
-    public String getSpeciality() {
+    public Speciality getSpeciality() {
         return speciality;
     }
-    
-    public void setSpeciality(String speciality) {
+
+    public void setSpeciality(Speciality speciality) {
         this.speciality = speciality;
     }
 
