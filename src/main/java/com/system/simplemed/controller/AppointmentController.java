@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.ws.Response;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -58,6 +56,7 @@ public class AppointmentController {
 
         appointmentDetails.setPatient(patient);
         appointmentDetails.setDoctor(doctor);
+        appointmentDetails.setSpeciality(doctor.getSpeciality().getName());
         Appointment createdAppointment = appointmentRepository.save(appointmentDetails);
         return ResponseEntity.ok(createdAppointment);
     }

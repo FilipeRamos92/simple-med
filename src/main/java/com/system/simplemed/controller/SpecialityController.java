@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,7 +28,7 @@ public class SpecialityController {
         @Autowired
         private SpecialityRepository specialityRepository;
 
-        @GetMapping("specialities")
+        @GetMapping("/specialities")
         public List<Speciality> getAllSpecialities(){
             return specialityRepository.findAll();
         } 
@@ -35,6 +36,18 @@ public class SpecialityController {
         @PostMapping("/specialities")
         public Speciality createSpeciality(@RequestBody Speciality speciality){
             return specialityRepository.save(speciality);
+        }
+
+        @PutMapping("/specialities/{specialityId}")
+        public ResponseEntity<Map<String, Boolean>> updateSpeciality(@PathVariable Long specialityId, @RequestBody Speciality specialityDetails){
+            Speciality speciality = specialityRepository.findById(specialityId)
+                .orElseThrow(() -> new ResourceNotFoundException("Speciality not exist with id: " + specialityId));
+
+                speciality.setName(specialityDetails.getName());
+                specialityRepository.save(speciality);
+                Map<String,Boolean> response = new HashMap<>();
+                response.put("updated", Boolean.TRUE);
+                return ResponseEntity.ok(response);
         }
 
         @DeleteMapping("/specialities/{id}")
