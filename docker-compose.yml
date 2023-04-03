@@ -1,7 +1,7 @@
 version: '3.3'
 services:
   database:
-    image: 'postgres:13.1-alpine'
+    image: 'postgres:13.1'
     container_name: database
     volumes:
       - postgres-data:/var/lib/postgresql/data
@@ -33,7 +33,9 @@ services:
   frontend:
     image: simple-med-frontend
     ports:
-      - '9000:80'
+      - '4200:80'
+    depends_on:
+      - backend
 volumes:
   postgres-data:
 
