@@ -7,6 +7,18 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+
 @Entity
 @Table(name = "specialities")
 public class Speciality {
@@ -18,22 +30,8 @@ public class Speciality {
 	@Column(name = "name")
 	private String name;
 
-	public Speciality() {}
-	
 	public Speciality(String name) {
 		super();
 		this.name = name;
 	}
-
-	public long getId() {
-		return id;
-	}
-
-	public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }

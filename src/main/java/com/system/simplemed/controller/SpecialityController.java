@@ -35,6 +35,7 @@ public class SpecialityController {
 
         @PostMapping("/specialities")
         public Speciality createSpeciality(@RequestBody Speciality speciality){
+            System.out.println(speciality.toString());
             return specialityRepository.save(speciality);
         }
 
