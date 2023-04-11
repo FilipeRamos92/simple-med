@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,25 +17,31 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.system.simplemed.dto.PatientDTO;
 import com.system.simplemed.exception.ResourceNotFoundException;
 import com.system.simplemed.model.Patient;
 import com.system.simplemed.repository.PatientRepository;
+import com.system.simplemed.service.PatientService;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/api/v1/")
 public class PatientController {
+
     @Autowired
     private PatientRepository patientRepository;
 
+	@Autowired
+	private PatientService patientService;
+
     @GetMapping("patients")
-    public List<Patient> getAllPatients(){
-        return patientRepository.findAll();
+    public ResponseEntity<List<PatientDTO>> getAll(){
+        return new ResponseEntity<>(patientService.getAll(), HttpStatus.OK);
     }
 
 	@PostMapping("/patients")
-	public Patient createPatient(@RequestBody Patient patient) {
-		return patientRepository.save(patient);
+	public ResponseEntity<PatientDTO> create(@RequestBody Patient patient) {
+		return new ResponseEntity<>(patientService.create(patient), HttpStatus.CREATED);
 	}
 
     @PutMapping("/patients/{id}")
