@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.system.simplemed.model.Speciality;
 
@@ -82,5 +83,17 @@ public class SpecialityRepositoryTests {
 
         assertThat(specialityUpdated).isNotNull();
         assertThat(specialityUpdated.getName()).isEqualTo("Pediatria");
+    }
+
+    @Test
+    public void SpecialityRepository_DeleteSpeciality_ReturnSpecialityIsEmpty() {
+        Speciality speciality = Speciality.builder()
+        .name("Cardiologia").build();
+
+        specialityRepository.save(speciality);
+        specialityRepository.deleteById(speciality.getId());
+        Optional<Speciality> specialityReturn = specialityRepository.findById(speciality.getId());
+
+        assertThat(specialityReturn).isEmpty();
     }
 }
