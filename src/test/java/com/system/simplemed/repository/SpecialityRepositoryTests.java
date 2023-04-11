@@ -19,10 +19,7 @@ public class SpecialityRepositoryTests {
 
     @Test
     public void SpecialityRepository_SaveAll_ReturnSavedSpeciality() {
-        Speciality speciality = Speciality.builder()
-            .name("Cardiologia")
-            .build();
-
+        Speciality speciality = Speciality.builder().name("Cardiologia").build();
         Speciality savedSpeciality = specialityRepository.save(speciality);
 
         assertThat(savedSpeciality).isNotNull();
@@ -31,11 +28,8 @@ public class SpecialityRepositoryTests {
 
     @Test
     public void SpecialityRepository_FindAll_ReturnMoreThanOneSpeciality() {
-        Speciality speciality = Speciality.builder()
-            .name("Cardiologia").build();
-
-        Speciality speciality2 = Speciality.builder()
-            .name("Pediatria").build();
+        Speciality speciality = Speciality.builder().name("Cardiologia").build();
+        Speciality speciality2 = Speciality.builder().name("Pediatria").build();
 
         specialityRepository.save(speciality);
         specialityRepository.save(speciality2);
@@ -48,9 +42,7 @@ public class SpecialityRepositoryTests {
 
     @Test
     public void SpecialityRepository_FindById_ReturnSpeciality() {
-        Speciality speciality = Speciality.builder()
-            .name("Cardiologia").build();
-
+        Speciality speciality = Speciality.builder().name("Cardiologia").build();
         specialityRepository.save(speciality);
         
         Speciality specialityById = specialityRepository.findById(speciality.getId()).get();
@@ -60,10 +52,9 @@ public class SpecialityRepositoryTests {
 
     @Test
     public void SpecialityRepository_FindByName_ReturnSpecialityNotNull() {
-        Speciality speciality = Speciality.builder()
-            .name("Cardiologia").build();
-
+        Speciality speciality = Speciality.builder().name("Cardiologia").build();
         specialityRepository.save(speciality);
+
         Speciality specialitySaved = specialityRepository.findByName(speciality.getName()).get();
 
         assertThat(specialitySaved).isNotNull();
@@ -71,15 +62,13 @@ public class SpecialityRepositoryTests {
 
     @Test
     public void SpecialityRepository_UpdateSpeciality_ReturnSpecialityNotNull() {
-        Speciality speciality = Speciality.builder()
-            .name("Cardiologia").build();
-
+        Speciality speciality = Speciality.builder().name("Cardiologia").build();
         specialityRepository.save(speciality);
-        speciality.setName("Pediatria");
+        
+        Speciality specialitySave = specialityRepository.findById(speciality.getId()).get();
+        specialitySave.setName("Pediatria");
+        Speciality specialityUpdated = specialityRepository.save(specialitySave);
 
-        specialityRepository.save(speciality);
-
-        Speciality specialityUpdated = specialityRepository.findById(speciality.getId()).get();
 
         assertThat(specialityUpdated).isNotNull();
         assertThat(specialityUpdated.getName()).isEqualTo("Pediatria");
@@ -87,10 +76,9 @@ public class SpecialityRepositoryTests {
 
     @Test
     public void SpecialityRepository_DeleteSpeciality_ReturnSpecialityIsEmpty() {
-        Speciality speciality = Speciality.builder()
-        .name("Cardiologia").build();
-
+        Speciality speciality = Speciality.builder().name("Cardiologia").build();
         specialityRepository.save(speciality);
+
         specialityRepository.deleteById(speciality.getId());
         Optional<Speciality> specialityReturn = specialityRepository.findById(speciality.getId());
 

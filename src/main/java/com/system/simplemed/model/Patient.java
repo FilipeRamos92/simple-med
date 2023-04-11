@@ -12,6 +12,14 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+
 @Entity
 @Table(name = "patients")
 public class Patient {
@@ -42,8 +50,6 @@ public class Patient {
 	@JsonManagedReference(value = "patient")
 	private List<Appointment> appointments;
 
-	public Patient() {}
-	
 	public Patient(String firstName, String lastName, String email, String birthdate, String gender, String cellphone) {
 		super();
 		this.firstName = firstName;
