@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.system.simplemed.dto.PatientDto;
 import com.system.simplemed.model.Patient;
-import com.system.simplemed.repository.PatientRepository;
 import com.system.simplemed.service.PatientService;
 
 @CrossOrigin(origins = "http://localhost:4200")
@@ -32,9 +31,6 @@ public class PatientController {
 	@Autowired
 	private ModelMapper modelMapper;
 	
-    @Autowired
-    private PatientRepository patientRepository;
-
 	private PatientService patientService;
 
 	public PatientController(PatientService patientService) {
