@@ -3,6 +3,7 @@ package com.system.simplemed.service.impl;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.system.simplemed.exception.ResourceNotFoundException;
@@ -33,12 +34,30 @@ public class PatientServiceImpl implements PatientService {
         } else {
             throw new ResourceNotFoundException("Patient not exist with id: " + id);
         }
-
     }
 
     @Override
     public Patient createPatient(Patient patient) {
         return patientRepository.save(patient);
+    }
+
+    @Override
+    public Patient updatePatient(long id, Patient patientRequest) {
+        Patient patient = patientRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Patient not exist with id: " + id));
+
+        patient.setFirstName(patientRequest.getFirstName());
+        patient.setLastName(patientRequest.getLastName());
+
+        return patientRepository.save(patient);
+    }
+
+    @Override
+    public void deletePatient(long id) {
+        Patient patient = patientRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Patient not exist with id: " + id));
+
+        patientRepository.delete(patient);
     }
    
 }

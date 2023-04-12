@@ -12,8 +12,7 @@ public interface PatientService {
 
     Patient createPatient(Patient patient);
     
-    // Patient updatePatient(long id, Patient patient);
+    Patient updatePatient(long id, Patient patient);
     
-    
-    // void deletePatient(long id);	
+    void deletePatient(long id);	
 }

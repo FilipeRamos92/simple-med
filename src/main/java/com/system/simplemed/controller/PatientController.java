@@ -20,11 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.system.simplemed.dto.PatientDto;
-import com.system.simplemed.exception.ResourceNotFoundException;
 import com.system.simplemed.model.Patient;
 import com.system.simplemed.repository.PatientRepository;
 import com.system.simplemed.service.PatientService;
-import com.system.simplemed.service.impl.PatientServiceImpl;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -76,29 +74,22 @@ public class PatientController {
 	}
 
     @PutMapping("/{id}")
-	public ResponseEntity<Patient> updatePatient(@PathVariable Long id, @RequestBody Patient patientDetails){
-		Patient patient = patientRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Patient not exist with id :" + id));
+	public ResponseEntity<PatientDto> updatePatient(@PathVariable Long id, @RequestBody Patient patientDetails){
 		
-        patient.setFirstName(patientDetails.getFirstName());
-        patient.setLastName(patientDetails.getLastName());
-        patient.setEmail(patientDetails.getEmail());
-        patient.setBirthdate(patientDetails.getBirthdate());
-        patient.setGender(patientDetails.getGender());
-        patient.setCellphone(patientDetails.getCellphone());
-		
-		Patient updatedPatient = patientRepository.save(patient);
-		return ResponseEntity.ok(updatedPatient);
+		Patient patient = patientService.updatePatient(id, patientDetails);
+
+		PatientDto patientResponse = modelMapper.map(patient, PatientDto.class);
+		return new ResponseEntity<>(patientResponse, HttpStatus.ACCEPTED);
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Map<String, Boolean>> deletePatient(@PathVariable Long id){
-		Patient patient = patientRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Patient not exist with id :" + id));
-		
-                patientRepository.delete(patient);
+	public ResponseEntity<Map<String, Boolean>> deletePatient(@PathVariable(name = "id") Long id){
+
+		patientService.deletePatient(id);
+
 		Map<String, Boolean> response = new HashMap<>();
 		response.put("deleted", Boolean.TRUE);
+
 		return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
 	}
 }
