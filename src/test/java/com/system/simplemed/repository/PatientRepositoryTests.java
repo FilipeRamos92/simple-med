@@ -40,7 +40,7 @@ public class PatientRepositoryTests {
         List<Patient> patientList = patientRepository.findAll();
 
         assertNotNull(patientList);
-        assertEquals(patientList.size(), 2);
+        assertEquals(2, patientList.size());
     }
 
     @Test
@@ -64,7 +64,7 @@ public class PatientRepositoryTests {
         Patient patientUpdated = patientRepository.save(patientSave);
 
         assertNotNull(patientUpdated);
-        assertEquals(patientUpdated.getFirstName(), "Zed");
+        assertEquals("Zed", patientUpdated.getFirstName());
     }
 
     @Test

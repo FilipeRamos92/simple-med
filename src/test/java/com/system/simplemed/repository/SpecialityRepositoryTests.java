@@ -4,7 +4,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,8 +25,8 @@ public class SpecialityRepositoryTests {
         Speciality speciality = Speciality.builder().name("Cardiologia").build();
         Speciality savedSpeciality = specialityRepository.save(speciality);
 
-        assertThat(savedSpeciality).isNotNull();
-        assertThat(savedSpeciality.getId()).isGreaterThan(0);
+        assertNotNull(savedSpeciality);
+        assertTrue(savedSpeciality.getId() > 0);
     }
 
     @Test
@@ -36,8 +39,8 @@ public class SpecialityRepositoryTests {
 
         List<Speciality> specialityList = specialityRepository.findAll();
 
-        assertThat(specialityList).isNotNull();
-        assertThat(specialityList.size()).isEqualTo(2);
+        assertNotNull(specialityList);
+        assertEquals(2, specialityList.size());
     }
 
     @Test
@@ -47,7 +50,7 @@ public class SpecialityRepositoryTests {
         
         Speciality specialityById = specialityRepository.findById(speciality.getId()).get();
 
-        assertThat(specialityById).isNotNull();
+        assertNotNull(specialityById);
     }
 
     @Test
@@ -57,7 +60,7 @@ public class SpecialityRepositoryTests {
 
         Speciality specialitySaved = specialityRepository.findByName(speciality.getName()).get();
 
-        assertThat(specialitySaved).isNotNull();
+        assertNotNull(specialitySaved);
     }
 
     @Test
@@ -69,9 +72,8 @@ public class SpecialityRepositoryTests {
         specialitySave.setName("Pediatria");
         Speciality specialityUpdated = specialityRepository.save(specialitySave);
 
-
-        assertThat(specialityUpdated).isNotNull();
-        assertThat(specialityUpdated.getName()).isEqualTo("Pediatria");
+        assertNotNull(specialityUpdated);
+        assertEquals("Pediatria", specialityUpdated.getName());
     }
 
     @Test
@@ -82,6 +84,6 @@ public class SpecialityRepositoryTests {
         specialityRepository.deleteById(speciality.getId());
         Optional<Speciality> specialityReturn = specialityRepository.findById(speciality.getId());
 
-        assertThat(specialityReturn).isEmpty();
+        assertFalse(specialityReturn.isPresent());
     }
 }
