@@ -1,9 +1,13 @@
 package com.system.simplemed.repository;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 import java.util.Optional;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -21,8 +25,8 @@ public class PatientRepositoryTests {
         Patient patient = Patient.builder().firstName("Filipe").build();
         Patient patientSaved = patientRepository.save(patient);
 
-        Assertions.assertThat(patientSaved).isNotNull();
-        Assertions.assertThat(patient.getId()).isGreaterThan(0);
+        assertNotNull(patientSaved);
+        assertTrue(patient.getId() > 0);
     }
 
     @Test
@@ -35,8 +39,8 @@ public class PatientRepositoryTests {
 
         List<Patient> patientList = patientRepository.findAll();
 
-        Assertions.assertThat(patientList).isNotNull();
-        Assertions.assertThat(patientList.size()).isEqualTo(2);
+        assertNotNull(patientList);
+        assertEquals(patientList.size(), 2);
     }
 
     @Test
@@ -46,7 +50,7 @@ public class PatientRepositoryTests {
 
         Patient patientSaved = patientRepository.findById(patient.getId()).get();
 
-        Assertions.assertThat(patientSaved).isNotNull();
+        assertNotNull(patientSaved);
     }
 
     @Test
@@ -59,8 +63,8 @@ public class PatientRepositoryTests {
         patientSave.setFirstName("Zed");
         Patient patientUpdated = patientRepository.save(patientSave);
 
-        Assertions.assertThat(patientUpdated).isNotNull();
-        Assertions.assertThat(patientUpdated.getFirstName()).isEqualTo("Zed");
+        assertNotNull(patientUpdated);
+        assertEquals(patientUpdated.getFirstName(), "Zed");
     }
 
     @Test
@@ -71,6 +75,6 @@ public class PatientRepositoryTests {
         patientRepository.deleteById(patient.getId());
         Optional<Patient> patientReturn = patientRepository.findById(patient.getId());
 
-        Assertions.assertThat(patientReturn).isEmpty();
+        assertFalse(patientReturn.isPresent());
     }
 }
