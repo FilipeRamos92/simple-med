@@ -15,6 +15,16 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+
 @Entity
 @Table(name = "doctors")
 public class Doctor {
@@ -48,83 +58,4 @@ public class Doctor {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "speciality_id", nullable = false)
     private Speciality speciality;
-
-    public Doctor() {}
-    
-    public Doctor(String firstName, String lastName, String doctorReg, String gender, String localService, Speciality speciality) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.doctorReg = doctorReg;
-        this.gender = gender;
-        this.localService = localService;
-        this.speciality = speciality;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getDoctorReg() {
-        return doctorReg;
-    }
-
-    public void setDoctorReg(String doctorReg) {
-        this.doctorReg = doctorReg;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    public String getLocalService() {
-        return localService;
-    }
-
-    public void setLocalService(String localService) {
-        this.localService = localService;
-    }
-
-    public Speciality getSpeciality() {
-        return speciality;
-    }
-
-    public void setSpeciality(Speciality speciality) {
-        this.speciality = speciality;
-    }
-
-    public List<Schedule> getSchedules() {
-        return schedules;
-    }
-
-    public void setSchedules(List<Schedule> schedules) {
-        this.schedules = schedules;
-    }
-
-    public List<Appointment> getAppointments() {
-        return appointments;
-    }
-
-    public void setAppointments(List<Appointment> appointments) {
-        this.appointments = appointments;
-    }
 }
