@@ -56,7 +56,6 @@ public class AppointmentController {
 
         appointmentDetails.setPatient(patient);
         appointmentDetails.setDoctor(doctor);
-        appointmentDetails.setSpeciality(doctor.getSpeciality().getName());
         Appointment createdAppointment = appointmentRepository.save(appointmentDetails);
         return ResponseEntity.ok(createdAppointment);
     }
