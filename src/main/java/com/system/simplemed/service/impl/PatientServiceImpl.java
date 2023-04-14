@@ -37,13 +37,20 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public Patient createPatient(Patient patient) {
+
+        Optional<Patient> savedPatient = patientRepository.findByEmail(patient.getEmail());
+
+        if(savedPatient.isPresent()) {
+            throw new ResourceNotFoundException("Patient already exist with email: " + patient.getEmail());
+        }
         return patientRepository.save(patient);
     }
 
     @Override
     public Patient updatePatient(long id, Patient patientRequest) {
-        Patient patient = patientRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Patient not exist with id: " + id));
+
+        Patient patient = patientRepository.findById(patientRequest.getId())
+            .orElseThrow(() -> new ResourceNotFoundException("Patient not exist with id: " + patientRequest.getId()));
 
         patient.setFirstName(patientRequest.getFirstName());
         patient.setLastName(patientRequest.getLastName());
