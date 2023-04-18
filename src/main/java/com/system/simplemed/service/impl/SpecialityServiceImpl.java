@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.system.simplemed.exception.ResourceAlreadyExistException;
 import com.system.simplemed.exception.ResourceNotFoundException;
 import com.system.simplemed.model.Speciality;
 import com.system.simplemed.repository.SpecialityRepository;
@@ -38,7 +39,7 @@ public class SpecialityServiceImpl implements SpecialityService {
         
         Optional<Speciality> savedSpeciality = specialityRepository.findByName(speciality.getName());
         if (savedSpeciality.isPresent()) {
-            throw new ResourceNotFoundException("Speciality name already exist with name: " + speciality.getName());
+            throw new ResourceAlreadyExistException("Speciality already exist with name: " + speciality.getName());
         } 
         return specialityRepository.save(speciality);
     }

@@ -7,7 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.system.simplemed.exception.ResourceNotFoundException;
+import com.system.simplemed.exception.ResourceAlreadyExistException;
 import com.system.simplemed.model.Patient;
 import com.system.simplemed.repository.PatientRepository;
 import com.system.simplemed.service.impl.PatientServiceImpl;
@@ -46,30 +46,6 @@ public class PatientServiceTests {
     }
 
     @Test
-    public void givenPatientObject_whenSavePatient_thenReturnPatientObject() {
-        given(patientRepository.findByEmail(patient.getEmail()))
-            .willReturn(Optional.empty());
-
-        given(patientRepository.save(patient)).willReturn(patient);
-
-        Patient savedPatient = patientService.createPatient(patient);
-
-        assertNotNull(savedPatient);
-    }
-
-    @Test
-    public void givenPatientObject_whenSavePatient_thenThrowsException() {
-        given(patientRepository.findByEmail(patient.getEmail()))
-            .willReturn(Optional.of(patient));
-
-        assertThrows(ResourceNotFoundException.class, () -> {
-            patientService.createPatient(patient);
-        });
-
-        verify(patientRepository, never()).save(any(Patient.class));
-    }
-
-    @Test
     public void givenPatientList_whenGetAllPatients_thenReturnPatientList() {
         
         Patient patient2 = Patient.builder()
@@ -99,7 +75,7 @@ public class PatientServiceTests {
 
     @Test
     public void givenPatientId_whenGetPatientId_thenReturnPatientObject() {
-        given(patientRepository.findById(1L)).willReturn(Optional.of(patient));
+        given(patientRepository.findById(patient.getId())).willReturn(Optional.of(patient));
 
         Patient savedPatient = patientService.getPatientById(patient.getId());
 
@@ -107,9 +83,33 @@ public class PatientServiceTests {
     }
 
     @Test
+    public void givenPatientObject_whenSavePatient_thenReturnPatientObject() {
+        given(patientRepository.findByEmail(patient.getEmail()))
+            .willReturn(Optional.empty());
+
+        given(patientRepository.save(patient)).willReturn(patient);
+
+        Patient savedPatient = patientService.createPatient(patient);
+
+        assertNotNull(savedPatient);
+    }
+
+    @Test
+    public void givenPatientObject_whenSavePatient_thenThrowsException() {
+        given(patientRepository.findByEmail(patient.getEmail()))
+            .willReturn(Optional.of(patient));
+
+        assertThrows(ResourceAlreadyExistException.class, () -> {
+            patientService.createPatient(patient);
+        });
+
+        verify(patientRepository, never()).save(any(Patient.class));
+    }
+
+    @Test
     public void givenPatientId_whenUpdatePatient_thenReturnUpdatedPatient() {
         
-        given(patientRepository.findById(1L)).willReturn(Optional.of(patient));
+        given(patientRepository.findById(patient.getId())).willReturn(Optional.of(patient));
         given(patientRepository.save(patient)).willReturn(patient);
 
         String newEmail = "filipendo@email.com";

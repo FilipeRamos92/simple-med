@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.system.simplemed.exception.ResourceAlreadyExistException;
 import com.system.simplemed.exception.ResourceNotFoundException;
 import com.system.simplemed.model.Patient;
 import com.system.simplemed.repository.PatientRepository;
@@ -41,7 +42,7 @@ public class PatientServiceImpl implements PatientService {
         Optional<Patient> savedPatient = patientRepository.findByEmail(patient.getEmail());
 
         if(savedPatient.isPresent()) {
-            throw new ResourceNotFoundException("Patient already exist with email: " + patient.getEmail());
+            throw new ResourceAlreadyExistException("Patient already exist with email: " + patient.getEmail());
         }
         return patientRepository.save(patient);
     }

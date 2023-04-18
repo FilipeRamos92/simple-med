@@ -15,9 +15,11 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import com.system.simplemed.exception.ResourceAlreadyExistException;
 import com.system.simplemed.exception.ResourceNotFoundException;
 import com.system.simplemed.model.Speciality;
 import com.system.simplemed.repository.SpecialityRepository;
@@ -42,15 +44,6 @@ public class SpecialityServiceTests {
             .build();
     }
 
-    // @Test
-    // public void givenSpecialityObject_whenSavedSpeciality_thenReturnSpecialityObject() {
-    //     given(specialityRepository.findByName(speciality.getName())).willReturn(Optional.empty());
-
-    //     given(specialityRepository.save(speciality)).willReturn(speciality);
-
-    //     Speciality savedSpeciality = specialityService.createSpeciality(speciality);
-    // }
-
     @Test
     public void givenSpecialityList_whenGetAllSpecialities_thenReturnSpecialityList() {
 
@@ -67,6 +60,16 @@ public class SpecialityServiceTests {
     }
 
     @Test
+    public void givenSpecialityList_whenGetAllSpecialities_thenReturnEmptySpecialityList() {
+        
+        given(specialityRepository.findAll()).willReturn(Collections.emptyList());
+
+        List<Speciality> specialityList = specialityService.getAllSpecialities();
+
+        assertEquals(0, specialityList.size());
+    }
+
+    @Test
     public void givenSpecialityId_whenGetSpecialityById_thenReturnSpecialityObject() {
         
         given(specialityRepository.findById(speciality.getId())).willReturn(Optional.of(speciality));
@@ -77,11 +80,32 @@ public class SpecialityServiceTests {
     }
 
     @Test
+    public void givenSpecialityObject_whenSaveSpeciality_thenReturnSpecialityObject() {
+
+        given(specialityRepository.findByName(speciality.getName())).willReturn(Optional.empty());
+        given(specialityRepository.save(speciality)).willReturn(speciality);
+
+        Speciality savedSpeciality = specialityService.createSpeciality(speciality);
+
+        assertNotNull(savedSpeciality);
+    }
+
+    @Test
+    public void givenSpecialityId_whenGetSpecialityById_thenThrowsException() {
+        
+        given(specialityRepository.findById(speciality.getId())).willReturn(Optional.empty());
+
+       assertThrows(ResourceNotFoundException.class, () -> {
+        specialityService.getSpecialityById(speciality.getId());
+       });
+    }
+
+    @Test
     public void givenSpecialityObject_whenCreateSpeciality_thenReturnSpecialityObject() {
 
         given(specialityRepository.findByName(speciality.getName())).willReturn(Optional.of(speciality));
 
-        assertThrows(ResourceNotFoundException.class, () -> {
+        assertThrows(ResourceAlreadyExistException.class, () -> {
             specialityService.createSpeciality(speciality);
         });
     }
