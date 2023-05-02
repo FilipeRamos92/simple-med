@@ -31,30 +31,28 @@ public class PatientController {
 	@Autowired
 	private ModelMapper modelMapper;
 	
+	@Autowired
 	private PatientService patientService;
 
-	public PatientController(PatientService patientService) {
-		super();
-		this.patientService = patientService;
-	}
-
-
     @GetMapping
-    public List<PatientDto> getAllPatients(){
+    public ResponseEntity<List<PatientDto>> getAllPatients(){
 
-		return patientService.getAllPatients()
+		List<PatientDto> patientList = patientService.getAllPatients()
 			.stream()
 			.map(patient -> modelMapper.map(patient, PatientDto.class))
 			.collect(Collectors.toList());
+
+		return new ResponseEntity<List<PatientDto>>(patientList, HttpStatus.OK);
     }
 
 	@GetMapping("/{id}")
-	public ResponseEntity<PatientDto> getPatientById(@PathVariable(name = "id") long id) {
+	public ResponseEntity<PatientDto> getPatientById(@PathVariable long id) {
 		
 		Patient patient = patientService.getPatientById(id);
 
-		PatientDto patientResponse = modelMapper.map(patient, PatientDto.class);
-		return ResponseEntity.ok().body(patientResponse);
+		PatientDto patientDto = modelMapper.map(patient, PatientDto.class);
+
+		return new ResponseEntity<PatientDto>(patientDto, HttpStatus.OK);
 	}
 
 	@PostMapping
@@ -70,22 +68,23 @@ public class PatientController {
 	}
 
     @PutMapping("/{id}")
-	public ResponseEntity<PatientDto> updatePatient(@PathVariable Long id, @RequestBody Patient patientDetails){
+	public ResponseEntity<PatientDto> updatePatient(@PathVariable long id, @RequestBody Patient patientDetails){
 		
 		Patient patient = patientService.updatePatient(id, patientDetails);
 
-		PatientDto patientResponse = modelMapper.map(patient, PatientDto.class);
-		return new ResponseEntity<>(patientResponse, HttpStatus.ACCEPTED);
+		PatientDto patientDto = modelMapper.map(patient, PatientDto.class);
+
+		return new ResponseEntity<PatientDto>(patientDto, HttpStatus.ACCEPTED);
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Map<String, Boolean>> deletePatient(@PathVariable(name = "id") Long id){
+	public ResponseEntity<Map<String, Boolean>> deletePatient(@PathVariable long id){
 
 		patientService.deletePatient(id);
 
 		Map<String, Boolean> response = new HashMap<>();
 		response.put("deleted", Boolean.TRUE);
 
-		return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+		return new ResponseEntity<Map<String, Boolean>>(response, HttpStatus.ACCEPTED);
 	}
 }

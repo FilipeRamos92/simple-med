@@ -12,7 +12,9 @@ public interface DoctorService {
 
     public Doctor createDoctor(Doctor doctor);
 
-    public Doctor updateDoctor(long id, Doctor doctor);
-
+    public Doctor updateDoctorInfo(long id, Doctor doctor);
+    
+    public Doctor updateDoctorSpeciality(long doctorId, long specialityId);
+    
     public void deleteDoctor(long id);
 }

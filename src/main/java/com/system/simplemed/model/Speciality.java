@@ -29,9 +29,4 @@ public class Speciality {
 	
 	@Column(name = "name")
 	private String name;
-
-	public Speciality(String name) {
-		super();
-		this.name = name;
-	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,49 +17,45 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.system.simplemed.exception.ResourceNotFoundException;
 import com.system.simplemed.model.Speciality;
-import com.system.simplemed.repository.SpecialityRepository;
+import com.system.simplemed.service.SpecialityService;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
-@RequestMapping("api/v1/")
+@RequestMapping("api/v1/specialities")
 public class SpecialityController {
 
         @Autowired
-        private SpecialityRepository specialityRepository;
+        private SpecialityService specialityService;
 
-        @GetMapping("/specialities")
-        public List<Speciality> getAllSpecialities(){
-            return specialityRepository.findAll();
+        @GetMapping
+        public ResponseEntity<List<Speciality>> getAllSpecialities(){
+            List<Speciality> specialityList = specialityService.getAllSpecialities();
+            return new ResponseEntity<List<Speciality>>(specialityList, HttpStatus.OK);
         } 
 
-        @PostMapping("/specialities")
-        public Speciality createSpeciality(@RequestBody Speciality speciality){
-            System.out.println(speciality.toString());
-            return specialityRepository.save(speciality);
+        @PostMapping
+        public ResponseEntity<Speciality> createSpeciality(@RequestBody Speciality specialityRequest){
+            Speciality speciality = specialityService.createSpeciality(specialityRequest);
+            return new ResponseEntity<Speciality>(speciality, HttpStatus.CREATED);
         }
 
-        @PutMapping("/specialities/{specialityId}")
-        public ResponseEntity<Map<String, Boolean>> updateSpeciality(@PathVariable Long specialityId, @RequestBody Speciality specialityDetails){
-            Speciality speciality = specialityRepository.findById(specialityId)
-                .orElseThrow(() -> new ResourceNotFoundException("Speciality not exist with id: " + specialityId));
+        @PutMapping("/{id}")
+        public ResponseEntity<Speciality> updateSpeciality(@PathVariable Long id, @RequestBody Speciality specialityRequest){
 
-                speciality.setName(specialityDetails.getName());
-                specialityRepository.save(speciality);
-                Map<String,Boolean> response = new HashMap<>();
-                response.put("updated", Boolean.TRUE);
-                return ResponseEntity.ok(response);
+            specialityService.updateSpeciality(id, specialityRequest);
+
+            return new ResponseEntity<Speciality>(specialityRequest, HttpStatus.ACCEPTED);
         }
 
-        @DeleteMapping("/specialities/{id}")
+        @DeleteMapping("/{id}")
         public ResponseEntity<Map<String, Boolean>> deleteSpeciality(@PathVariable Long id){
-            Speciality speciality = specialityRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Speciality not exist with id: " + id));
 
-            specialityRepository.delete(speciality);
+            specialityService.deleteSpeciality(id);
+
             Map<String, Boolean> response = new HashMap<>();
             response.put("deleted", Boolean.TRUE);
-            return ResponseEntity.ok(response);
+
+            return new ResponseEntity<Map<String,Boolean>>(response, HttpStatus.ACCEPTED);
         }
 }

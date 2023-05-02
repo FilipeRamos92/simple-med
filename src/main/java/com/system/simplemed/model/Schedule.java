@@ -1,6 +1,7 @@
 package com.system.simplemed.model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,8 +31,14 @@ public class Schedule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
-    @Column(name = "dateTime")
-    private LocalDateTime dateTime;
+    @Column(name = "date")
+    private LocalDate date;
+
+    @Column(name = "time")
+    private LocalTime time;
+
+    @Column(name = "status")
+    private ScheduleStatus status;
 
     @ManyToOne
     @JoinColumn(name = "doctor_id", nullable = false)

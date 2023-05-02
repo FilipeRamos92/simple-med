@@ -1,5 +1,6 @@
 package com.system.simplemed.repository;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -20,9 +21,18 @@ public class SpecialityRepositoryTests {
     @Autowired
     private SpecialityRepository specialityRepository;
 
+    Speciality speciality;
+
+    @BeforeEach
+    public void setup() {
+        
+        speciality = Speciality.builder().name("Cardiologia").build();
+
+    }
+
     @Test
     public void SpecialityRepository_SaveAll_ReturnSavedSpeciality() {
-        Speciality speciality = Speciality.builder().name("Cardiologia").build();
+        
         Speciality savedSpeciality = specialityRepository.save(speciality);
 
         assertNotNull(savedSpeciality);
@@ -31,7 +41,7 @@ public class SpecialityRepositoryTests {
 
     @Test
     public void SpecialityRepository_FindAll_ReturnMoreThanOneSpeciality() {
-        Speciality speciality = Speciality.builder().name("Cardiologia").build();
+        
         Speciality speciality2 = Speciality.builder().name("Pediatria").build();
 
         specialityRepository.save(speciality);
@@ -45,7 +55,7 @@ public class SpecialityRepositoryTests {
 
     @Test
     public void SpecialityRepository_FindById_ReturnSpeciality() {
-        Speciality speciality = Speciality.builder().name("Cardiologia").build();
+        
         specialityRepository.save(speciality);
         
         Speciality specialityById = specialityRepository.findById(speciality.getId()).get();
@@ -55,7 +65,7 @@ public class SpecialityRepositoryTests {
 
     @Test
     public void SpecialityRepository_FindByName_ReturnSpecialityNotNull() {
-        Speciality speciality = Speciality.builder().name("Cardiologia").build();
+        
         specialityRepository.save(speciality);
 
         Speciality specialitySaved = specialityRepository.findByName(speciality.getName()).get();
@@ -65,11 +75,12 @@ public class SpecialityRepositoryTests {
 
     @Test
     public void SpecialityRepository_UpdateSpeciality_ReturnSpecialityNotNull() {
-        Speciality speciality = Speciality.builder().name("Cardiologia").build();
+        
         specialityRepository.save(speciality);
         
         Speciality specialitySave = specialityRepository.findById(speciality.getId()).get();
         specialitySave.setName("Pediatria");
+
         Speciality specialityUpdated = specialityRepository.save(specialitySave);
 
         assertNotNull(specialityUpdated);
@@ -78,7 +89,7 @@ public class SpecialityRepositoryTests {
 
     @Test
     public void SpecialityRepository_DeleteSpeciality_ReturnSpecialityIsEmpty() {
-        Speciality speciality = Speciality.builder().name("Cardiologia").build();
+        
         specialityRepository.save(speciality);
 
         specialityRepository.deleteById(speciality.getId());
