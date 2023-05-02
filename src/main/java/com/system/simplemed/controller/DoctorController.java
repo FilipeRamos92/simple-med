@@ -1,10 +1,11 @@
 package com.system.simplemed.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,81 +17,75 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.system.simplemed.exception.ResourceNotFoundException;
 import com.system.simplemed.model.Doctor;
-import com.system.simplemed.model.Schedule;
 import com.system.simplemed.model.Speciality;
-import com.system.simplemed.repository.DoctorRepository;
-import com.system.simplemed.repository.ScheduleRepository;
-import com.system.simplemed.repository.SpecialityRepository;
+import com.system.simplemed.service.DoctorService;
+import com.system.simplemed.service.SpecialityService;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
-@RequestMapping("/api/v1/")
+@RequestMapping("/api/v1/doctors")
 public class DoctorController {
 
     @Autowired
-    private DoctorRepository doctorRepository;
+    private DoctorService doctorService;
 
 	@Autowired
-    private ScheduleRepository scheduleRepository;
-
-	@Autowired
-	private SpecialityRepository specialityRepository;
+	private SpecialityService specialityService;
 	
-    @GetMapping("doctors")
-    public Iterable<Doctor> getAllDoctors(){
-        return doctorRepository.findAll();
+    @GetMapping
+    public ResponseEntity<List<Doctor>> getAllDoctors() {
+		
+		List<Doctor> doctorList = doctorService.getAllDoctors();
+
+        return new ResponseEntity<List<Doctor>>(doctorList, HttpStatus.OK);
     }
 
-	@GetMapping("doctors/{id}")
-    public Optional<Doctor> getDoctor(@PathVariable Long id){
-        return doctorRepository.findById(id);
-    }
+	@GetMapping("/{id}")
+    public ResponseEntity<Doctor> getDoctor(@PathVariable long id){
+		
+		Doctor doctor = doctorService.getDoctorById(id);
 
-	@PostMapping("/doctors/speciality/{specialityId}")
-	public Doctor createDoctor(@PathVariable Long specialityId, @RequestBody Doctor doctor) {
-		Speciality speciality = specialityRepository.findById(specialityId)
-			.orElseThrow(() -> new ResourceNotFoundException("Speciality not exist with id: " + specialityId));
+		return new ResponseEntity<Doctor>(doctor, HttpStatus.OK);
+	}
+
+	@PostMapping("/speciality/{specialityId}")
+	public ResponseEntity<Doctor> createDoctor(@PathVariable long specialityId, @RequestBody Doctor doctor) {
+		
+		Speciality speciality = specialityService.getSpecialityById(specialityId);
 		
 		doctor.setSpeciality(speciality);
-		return doctorRepository.save(doctor);
+
+		doctorService.createDoctor(doctor);
+
+		return new ResponseEntity<Doctor>(doctor, HttpStatus.CREATED);
 	}
 
-    @PutMapping("/doctors/{id}")
-	public ResponseEntity<Doctor> updateDoctor(@PathVariable Long id, @RequestBody Doctor doctorDetails){
-		Doctor doctor = doctorRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Doctor not exist with id: " + id));
+    @PutMapping("/{id}")
+	public ResponseEntity<Doctor> updateDoctorInfo(@PathVariable long id, @RequestBody Doctor doctorDetails){
+
+		Doctor updatedDoctor = doctorService.updateDoctorInfo(id, doctorDetails);
 		
-        doctor.setFirstName(doctorDetails.getFirstName());
-        doctor.setLastName(doctorDetails.getLastName());
-        doctor.setDoctorReg(doctorDetails.getDoctorReg());
-        doctor.setGender(doctorDetails.getGender());
-        doctor.setLocalService(doctorDetails.getLocalService());
-        doctor.setSpeciality(doctorDetails.getSpeciality());
-		
-		Doctor updatedDoctor = doctorRepository.save(doctor);
-		return ResponseEntity.ok(updatedDoctor);
+		return new ResponseEntity<Doctor>(updatedDoctor, HttpStatus.ACCEPTED);
 	}
 
-	@PutMapping("/doctors/{id}/schedules")
-	public Schedule assingScheduleToDoctor(@PathVariable Long id, @RequestBody Schedule schedule){
-		Doctor doctor = doctorRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Doctor not exist with id: " + id));
-        
-        schedule.setDoctor(doctor);
+	@PutMapping("/{doctorId}/updateToSpeciality/{specialityId}")
+	public ResponseEntity<Doctor> updateDoctorSpeciality(@PathVariable long doctorId, @PathVariable long specialityId) {
 
-		return scheduleRepository.save(schedule);
+		Doctor updatedDoctor = doctorService.updateDoctorSpeciality(doctorId, specialityId);
+
+		return new ResponseEntity<Doctor>(updatedDoctor, HttpStatus.ACCEPTED);
 	}
 
-	@DeleteMapping("/doctors/{id}")
-	public ResponseEntity<Map<String, Boolean>> deleteDoctor(@PathVariable Long id){
-		Doctor doctor = doctorRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Doctor not exist with id :" + id));
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Map<String, Boolean>> deleteDoctor(@PathVariable long id){
 		
-                doctorRepository.delete(doctor);
+		doctorService.deleteDoctor(id);
+
 		Map<String, Boolean> response = new HashMap<>();
 		response.put("deleted", Boolean.TRUE);
-		return ResponseEntity.ok(response);
+
+		return new ResponseEntity<Map<String,Boolean>>(response, HttpStatus.ACCEPTED);
 	}
 }
