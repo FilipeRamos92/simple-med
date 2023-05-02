@@ -1,6 +1,7 @@
 package com.system.simplemed.service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -16,7 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -46,7 +47,8 @@ public class ScheduleServiceTests {
     
     public Schedule schedule;
 
-    public LocalDateTime dateTime;
+    public LocalDate date;
+    public LocalTime time;
 
     @BeforeEach
     public void init() {
@@ -55,11 +57,11 @@ public class ScheduleServiceTests {
 
         doctor = Doctor.builder().speciality(speciality).firstName("Filipe").build();
 
-        dateTime = LocalDateTime.of(2023, 4, 17, 12, 0, 0);
+        date = LocalDate.parse("2023-05-02");
 
         schedule = Schedule.builder()
             .id(1L)
-            .dateTime(dateTime)
+            .date(date)
             .doctor(doctor).build();
     }
 
@@ -68,10 +70,10 @@ public class ScheduleServiceTests {
         
         Schedule schedule2 = Schedule.builder()
             .id(2L)
-            .dateTime(dateTime)
+            .date(date)
             .doctor(doctor).build();
 
-        given(scheduleRepository.findAll()).willReturn(Arrays.asList(schedule, schedule2));
+        when(scheduleRepository.findAll()).thenReturn(Arrays.asList(schedule, schedule2));
 
         List<Schedule> scheduleList = scheduleService.getAllSchedules();
 
@@ -81,7 +83,7 @@ public class ScheduleServiceTests {
     @Test
     public void givenScheduleList_whenGetAllSchedules_thenReturnEmptyScheduleList() {
 
-        given(scheduleRepository.findAll()).willReturn(Collections.emptyList());
+        when(scheduleRepository.findAll()).thenReturn(Collections.emptyList());
 
         List<Schedule> scheduleList = scheduleService.getAllSchedules();
 
@@ -91,7 +93,7 @@ public class ScheduleServiceTests {
     @Test
     public void givenScheduleId_whenGetScheduleById_thenReturnScheduleObject() {
 
-        given(scheduleRepository.findById(schedule.getId())).willReturn(Optional.of(schedule));
+        when(scheduleRepository.findById(schedule.getId())).thenReturn(Optional.of(schedule));
 
         Schedule savedSchedule = scheduleService.getScheduleById(schedule.getId());
 
@@ -109,7 +111,7 @@ public class ScheduleServiceTests {
     @Test
     public void givenScheduleObject_whenSaveSchedule_thenReturnScheduleObject() {
         
-        given(scheduleRepository.save(schedule)).willReturn(schedule);
+        when(scheduleRepository.save(schedule)).thenReturn(schedule);
 
         Schedule saveSchedule = scheduleService.createSchedule(schedule);
 
@@ -119,18 +121,18 @@ public class ScheduleServiceTests {
     @Test
     public void givenScheduleId_whenUpdateSchedule_thenReturnNewScheduleObject() {
         
-        given(scheduleRepository.findById(schedule.getId())).willReturn(Optional.of(schedule));
-        given(scheduleRepository.save(schedule)).willReturn(schedule);
+        when(scheduleRepository.findById(schedule.getId())).thenReturn(Optional.of(schedule));
+        when(scheduleRepository.save(schedule)).thenReturn(schedule);
 
-        LocalDateTime newDateTime = LocalDateTime.of(2023, 4, 18, 12, 0, 0);
+        LocalDate newDate = LocalDate.parse("2022-05-02");
         Doctor newDoctor = Doctor.builder().speciality(speciality).firstName("Jéssica").build();
 
-        schedule.setDateTime(newDateTime);
+        schedule.setDate(newDate);
         schedule.setDoctor(newDoctor);
 
         Schedule updatedSchedule = scheduleService.updateSchedule(schedule.getId(), schedule);
 
-        assertEquals(newDateTime, updatedSchedule.getDateTime());
+        assertEquals(newDate, updatedSchedule.getDate());
         assertEquals(newDoctor, updatedSchedule.getDoctor());
     }
 
@@ -139,7 +141,7 @@ public class ScheduleServiceTests {
 
         long scheduleId = 1L;
 
-        given(scheduleRepository.findById(scheduleId)).willReturn(Optional.of(schedule));
+        when(scheduleRepository.findById(scheduleId)).thenReturn(Optional.of(schedule));
 
         scheduleService.deleteSchedule(scheduleId);
 

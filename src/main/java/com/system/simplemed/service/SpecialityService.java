@@ -10,6 +10,8 @@ public interface SpecialityService {
     public List<Speciality> getAllSpecialities();
 
     public Speciality getSpecialityById(long id);
+    
+    public Speciality getSpecialityByName(String name);
 
     public Speciality createSpeciality(Speciality speciality);
 

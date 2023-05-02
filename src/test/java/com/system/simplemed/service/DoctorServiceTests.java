@@ -10,7 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -24,7 +24,6 @@ import com.system.simplemed.exception.ResourceNotFoundException;
 import com.system.simplemed.model.Doctor;
 import com.system.simplemed.model.Speciality;
 import com.system.simplemed.repository.DoctorRepository;
-import com.system.simplemed.repository.SpecialityRepository;
 import com.system.simplemed.service.impl.DoctorServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,7 +33,7 @@ public class DoctorServiceTests {
     private DoctorRepository doctorRepository;
 
     @Mock
-    private SpecialityRepository specialityRepository;
+    private SpecialityService specialityService;
 
     @InjectMocks
     private DoctorServiceImpl doctorService;
@@ -43,17 +42,12 @@ public class DoctorServiceTests {
 
     private Speciality speciality;
 
-    private Speciality speciality2;
-
     @BeforeEach
-    public void init() {
+    public void setup() {
         
         speciality = Speciality.builder()
             .name("Cardiologia").build();
         
-        speciality2 = Speciality.builder()
-            .name("Fisiologia").build();
-
         doctor = Doctor.builder()
             .id(1L)
             .firstName("Filipe")
@@ -61,7 +55,6 @@ public class DoctorServiceTests {
             .speciality(speciality)
             .build();
     }
-
 
     @Test
     public void givenDoctorList_whenGetAllDoctors_thenReturnDoctorList() {
@@ -71,7 +64,7 @@ public class DoctorServiceTests {
             .firstName("Jéssica")
             .build();
 
-        given(doctorRepository.findAll()).willReturn(Arrays.asList(doctor, doctor2));
+        when(doctorRepository.findAll()).thenReturn(Arrays.asList(doctor, doctor2));
 
         List<Doctor> doctorList = doctorService.getAllDoctors();
 
@@ -81,7 +74,7 @@ public class DoctorServiceTests {
     @Test
     public void givenDoctorList_whenGetAllDoctor_thenReturnEmptyDoctorList() {
         
-        given(doctorRepository.findAll()).willReturn(Collections.emptyList());
+        when(doctorRepository.findAll()).thenReturn(Collections.emptyList());
 
         List<Doctor> doctorList = doctorService.getAllDoctors();
 
@@ -91,7 +84,7 @@ public class DoctorServiceTests {
     @Test
     public void givenDoctorId_whenGetDoctorById_thenReturnDoctorObject() {
         
-        given(doctorRepository.findById(doctor.getId())).willReturn(Optional.of(doctor));
+        when(doctorRepository.findById(doctor.getId())).thenReturn(Optional.of(doctor));
 
         Doctor savedDoctor = doctorService.getDoctorById(doctor.getId());
 
@@ -101,18 +94,20 @@ public class DoctorServiceTests {
     @Test
     public void givenDoctorId_whenGetDoctorById_thenThrowsException() {
         
-        given(doctorRepository.findById(doctor.getId())).willReturn(Optional.empty());
+        when(doctorRepository.findById(doctor.getId())).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNotFoundException.class, () -> {
+        Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
             doctorService.getDoctorById(doctor.getId());
         });
+
+        assertEquals("Doctor not exist with id: 1", exception.getMessage());
     }
 
     @Test
     public void givenDoctorObject_whenSaveDoctor_thenReturnDoctorObject() {
 
-        given(doctorRepository.findByDoctorReg(doctor.getDoctorReg())).willReturn(Optional.empty());
-        given(doctorRepository.save(doctor)).willReturn(doctor);
+        when(doctorRepository.findByDoctorReg(doctor.getDoctorReg())).thenReturn(Optional.empty());
+        when(doctorRepository.save(doctor)).thenReturn(doctor);
 
         Doctor savedDoctor = doctorService.createDoctor(doctor);
 
@@ -122,41 +117,50 @@ public class DoctorServiceTests {
     @Test
     public void givenDoctorObject_whenSaveDoctor_thenThrowsException() {
 
-        given(doctorRepository.findByDoctorReg(doctor.getDoctorReg())).willReturn(Optional.of(doctor));
+        when(doctorRepository.findByDoctorReg(doctor.getDoctorReg())).thenReturn(Optional.of(doctor));
 
-        assertThrows(ResourceAlreadyExistException.class, () -> {
+        Exception exception = assertThrows(ResourceAlreadyExistException.class, () -> {
             doctorService.createDoctor(doctor);
         });
+
+        assertEquals(
+            "Doctor already exist with doctor registry no. 1234", 
+            exception.getMessage()
+        );
     }
 
     @Test
-    public void givenDoctorId_whenUpdateDoctor_thenReturnDoctorObject() {
+    public void givenDoctorId_whenUpdateDoctorInfo_thenReturnDoctorObject() {
 
-        given(doctorRepository.findById(doctor.getId())).willReturn(Optional.of(doctor));
-        given(specialityRepository.findByName("Fisiologia")).willReturn(Optional.of(speciality2));
-        given(doctorRepository.save(doctor)).willReturn(doctor);
+        when(doctorRepository.findById(doctor.getId())).thenReturn(Optional.of(doctor));
+        when(doctorRepository.save(doctor)).thenReturn(doctor);
 
         String newFirstName = "Filipendo";
         String newDoctorReg = "4321";
-        String newSpeciality = "Fisiologia";
 
         doctor.setFirstName(newFirstName);
         doctor.setDoctorReg(newDoctorReg);
-        doctor.setSpeciality(speciality2);
 
-        Doctor updatedDoctor = doctorService.updateDoctor(doctor.getId(), doctor);
+        Doctor updatedDoctor = doctorService.updateDoctorInfo(doctor.getId(), doctor);
 
         assertEquals(newFirstName, updatedDoctor.getFirstName());
         assertEquals(newDoctorReg, updatedDoctor.getDoctorReg());
-        assertEquals(newSpeciality, updatedDoctor.getSpeciality().getName());
     }
 
     @Test
-    public void givenDoctorId_whenUpdateDoctor_thenThrowsException() {
+    public void givenDoctorId_whenUpdateDoctorSpeciality_thenReturnDoctorObject() {
 
-        assertThrows(ResourceNotFoundException.class, () -> {
-            doctorService.updateDoctor(doctor.getId(), doctor);
-        });
+        Speciality newSpeciality = Speciality.builder()
+            .id(2L)
+            .name("Pediatria").build();
+
+        when(doctorRepository.findById(doctor.getId())).thenReturn(Optional.of(doctor));
+        when(doctorRepository.save(doctor)).thenReturn(doctor);
+        when(specialityService.getSpecialityById(newSpeciality.getId())).thenReturn(newSpeciality);
+
+        Doctor updatedDoctor = doctorService.updateDoctorSpeciality(doctor.getId(), newSpeciality.getId());
+
+        assertEquals(newSpeciality.getName(), updatedDoctor.getSpeciality().getName());
     }
 
     @Test
@@ -164,11 +168,10 @@ public class DoctorServiceTests {
 
         long doctorId = 1L;
 
-        given(doctorRepository.findById(doctorId)).willReturn(Optional.of(doctor));
+        when(doctorRepository.findById(doctorId)).thenReturn(Optional.of(doctor));
 
         doctorService.deleteDoctor(doctorId);
 
         verify(doctorRepository, times(1)).delete(doctor);
     }
-
 }

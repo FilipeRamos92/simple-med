@@ -2,6 +2,7 @@ package com.system.simplemed.service.impl;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.system.simplemed.exception.ResourceNotFoundException;
@@ -12,12 +13,8 @@ import com.system.simplemed.service.ScheduleService;
 @Service
 public class ScheduleServiceImpl implements ScheduleService {
     
-    private final ScheduleRepository scheduleRepository;
-
-    public ScheduleServiceImpl(ScheduleRepository scheduleRepository) {
-        super();
-        this.scheduleRepository = scheduleRepository;
-    }
+    @Autowired
+    private ScheduleRepository scheduleRepository;
 
     public List<Schedule> getAllSchedules() {
         return scheduleRepository.findAll();
@@ -47,7 +44,9 @@ public class ScheduleServiceImpl implements ScheduleService {
         Schedule schedule = scheduleRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Schedule not exist with id: " + id));
 
-        schedule.setDateTime(scheduleRequest.getDateTime());
+        schedule.setDate(scheduleRequest.getDate());
+        schedule.setTime(scheduleRequest.getTime());
+        schedule.setStatus(scheduleRequest.getStatus());
         schedule.setDoctor(scheduleRequest.getDoctor());
 
         return scheduleRepository.save(schedule);
