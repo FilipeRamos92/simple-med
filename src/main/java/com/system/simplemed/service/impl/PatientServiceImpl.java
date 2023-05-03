@@ -3,6 +3,7 @@ package com.system.simplemed.service.impl;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.system.simplemed.exception.ResourceAlreadyExistException;
@@ -14,12 +15,8 @@ import com.system.simplemed.service.PatientService;
 @Service
 public class PatientServiceImpl implements PatientService {
     
-    private final PatientRepository patientRepository;
-
-    public PatientServiceImpl(PatientRepository patientRepository) {
-        super();
-        this.patientRepository = patientRepository;
-    }
+    @Autowired
+    private PatientRepository patientRepository;
 
     @Override
     public List<Patient> getAllPatients() {

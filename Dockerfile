@@ -1,7 +1,23 @@
-FROM openjdk:8
+# Stage 1
+FROM openjdk:8-jdk-alpine as builder
 
-VOLUME /tmp
+WORKDIR /app
 
-COPY target/*.jar app.jar
+COPY .mvn/ .mvn
+COPY mvnw pom.xml ./
 
-ENTRYPOINT ["java","-jar","/app.jar"]
+RUN chmod +x mvnw
+RUN ./mvnw dependency:go-offline
+
+COPY src ./src
+
+RUN ./mvnw clean install -DskipTests
+
+# Stage 2
+FROM openjdk:8-jdk-alpine
+
+WORKDIR /app
+
+COPY --from=builder /app/target/*.jar /app/*.jar
+
+ENTRYPOINT ["java", "-jar", "/app/*.jar"]
