@@ -1,5 +1,5 @@
 # Stage 1
-FROM openjdk:8-jdk-alpine as builder
+FROM eclipse-temurin:8-jdk-alpine as builder
 
 WORKDIR /app
 
@@ -14,7 +14,7 @@ COPY src ./src
 RUN ./mvnw clean install -DskipTests
 
 # Stage 2
-FROM openjdk:8-jdk-alpine
+FROM eclipse-temurin:8-jdk-alpine
 
 WORKDIR /app
 
