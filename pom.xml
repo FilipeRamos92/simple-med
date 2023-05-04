@@ -18,7 +18,6 @@
 		<java.version>1.8</java.version>
 		<springboot.version>2.7.9</springboot.version>
 		<postgresql.version>42.5.4</postgresql.version>
-		<h2.version>2.1.214</h2.version>
 		<modelmapper.version>3.0.0</modelmapper.version>
 		<lombok.version>1.18.26</lombok.version>
 	</properties>
@@ -61,7 +60,6 @@
 		<dependency>
     		<groupId>com.h2database</groupId>
     		<artifactId>h2</artifactId>
-			<version>${h2.version}</version>
     		<scope>test</scope>
 		</dependency>
 
