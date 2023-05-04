@@ -9,12 +9,10 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Setter
-@Getter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -27,6 +25,6 @@ public class Speciality {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	
-	@Column(name = "name")
+	@Column(name = "name", nullable = false)
 	private String name;
 }
