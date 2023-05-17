@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.system.simplemed.model.Doctor;
@@ -48,6 +49,11 @@ public class DoctorController {
 
 		return new ResponseEntity<Doctor>(doctor, HttpStatus.OK);
 	}
+
+	// @GetMapping
+	// public ResponseEntity<Doctor> getDoctorBySpeciality(@RequestParam String name) {
+	// 	return new ResponseEntity<Doctor>(null, null, 0);
+	// }
 
 	@PostMapping("/speciality/{specialityId}")
 	public ResponseEntity<Doctor> createDoctor(@PathVariable long specialityId, @RequestBody Doctor doctor) {

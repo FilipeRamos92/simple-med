@@ -40,7 +40,7 @@ public class ScheduleRepositoryTests {
         date = LocalDate.parse("2022-05-02");
         time = LocalTime.parse("13:00");
         
-        speciality = Speciality.builder().name("Cardiologia").build();
+        speciality = Speciality.builder().name("Cardiologia").occupation("Cardiologista").build();
 
         doctor = Doctor.builder()
             .firstName("Filipe")

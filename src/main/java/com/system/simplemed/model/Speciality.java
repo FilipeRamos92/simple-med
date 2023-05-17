@@ -27,4 +27,7 @@ public class Speciality {
 	
 	@Column(name = "name", nullable = false)
 	private String name;
+
+	@Column(name = "occupation", nullable = false)
+	private String occupation;
 }

@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -20,13 +21,22 @@ public class DoctorReposityTests {
     @Autowired
     private DoctorRepository doctorRepository;
 
-    @Test
-    public void DoctorRepository_SaveAll_ReturnSavedDoctor() {
-        Speciality speciality = Speciality.builder().name("Fisiologia").build();
-        
-        Doctor doctor = Doctor.builder()
+    private Speciality speciality;
+    private Doctor doctor;
+
+    @BeforeEach
+    private void setup() {
+        speciality = Speciality.builder()
+            .name("Fisiologia")
+            .occupation("Fisiologista").build();
+    
+        doctor = Doctor.builder()
             .firstName("Muzy")
             .speciality(speciality).build();
+    }
+
+    @Test
+    public void DoctorRepository_SaveAll_ReturnSavedDoctor() {
 
         Doctor doctorSaved = doctorRepository.save(doctor);
         assertNotNull(doctorSaved);
@@ -34,11 +44,6 @@ public class DoctorReposityTests {
 
     @Test
     public void DoctorRepository_FindAll_ReturnMoreThanOneDoctor() {
-        Speciality speciality = Speciality.builder().name("Cardiologia").build();
-
-        Doctor doctor = Doctor.builder()
-            .firstName("Filipe")
-            .speciality(speciality).build();
 
         Doctor doctor2 = Doctor.builder()
             .firstName("Zed")
@@ -55,11 +60,6 @@ public class DoctorReposityTests {
 
     @Test
     public void DoctorRepository_FindById_ReturnDoctorIsNotNull() {
-        Speciality speciality = Speciality.builder().name("Cardiologia").build();
-
-        Doctor doctor = Doctor.builder()
-            .firstName("Filipe")
-            .speciality(speciality).build();
 
         doctorRepository.save(doctor);
 
@@ -69,12 +69,12 @@ public class DoctorReposityTests {
     }
 
     @Test
-    public void DoctorRepository_UpdateDoctor_ReturnDoctorNotNull() {
-        Speciality speciality = Speciality.builder().name("Cardiologia").build();
+    public void DoctorRepository_findBySpecialityId() {
 
-        Doctor doctor = Doctor.builder()
-            .firstName("Filipe")
-            .speciality(speciality).build();
+    }
+
+    @Test
+    public void DoctorRepository_UpdateDoctor_ReturnDoctorNotNull() {
         
         doctorRepository.save(doctor);
 
@@ -89,11 +89,6 @@ public class DoctorReposityTests {
 
     @Test
     public void DoctorRepository_DeleteDoctor_ReturnDoctorIsEmpty() {
-        Speciality speciality = Speciality.builder().name("Cardiologia").build();
-
-        Doctor doctor = Doctor.builder()
-            .firstName("Filie")
-            .speciality(speciality).build();
         
         doctorRepository.save(doctor);
         
