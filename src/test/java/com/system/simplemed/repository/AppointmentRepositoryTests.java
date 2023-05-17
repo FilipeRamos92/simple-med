@@ -42,7 +42,7 @@ public class AppointmentRepositoryTests {
         patient = Patient.builder().firstName("Zed").build();
         patientRepository.save(patient);
 
-        speciality = Speciality.builder().name("Cardiologia").build();
+        speciality = Speciality.builder().name("Cardiologia").occupation("Cardiologista").build();
 
         doctor = Doctor.builder()
             .firstName("Filipe")

@@ -26,7 +26,7 @@ public class SpecialityRepositoryTests {
     @BeforeEach
     public void setup() {
         
-        speciality = Speciality.builder().name("Cardiologia").build();
+        speciality = Speciality.builder().name("Cardiologia").occupation("Cardiologista").build();
 
     }
 
@@ -42,7 +42,7 @@ public class SpecialityRepositoryTests {
     @Test
     public void SpecialityRepository_FindAll_ReturnMoreThanOneSpeciality() {
         
-        Speciality speciality2 = Speciality.builder().name("Pediatria").build();
+        Speciality speciality2 = Speciality.builder().name("Pediatria").occupation("Pediatra").build();
 
         specialityRepository.save(speciality);
         specialityRepository.save(speciality2);
